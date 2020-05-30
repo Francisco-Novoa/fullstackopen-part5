@@ -1,38 +1,182 @@
-.App {
-  text-align: center;
+:root{
+  font-size: 15px;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+button{
+  display:inline-block;
+  padding:0.3em 1.2em;
+  margin:0 0.3em 0.3em 0;
+  border-radius:2em;
+  box-sizing: border-box;
+  text-decoration:none;
+  font-family:'Roboto',sans-serif;
+  font-weight:300;
+  color:black;
+  text-align:center;
+  transition: all 0.2s;
   }
+
+body{
+  margin:0;
+  padding: 0;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.wrapper{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+}
+
+.alertspace{
+  width:16rem;
+  height: 100wv;
+  border-left-style: solid;
+  border-width: 2px;
+  padding-top: 2rem;
+  padding-left:1rem ;
+  padding-right: 0.5rem;
+
+}
+
+.navbar{
+  float:top;
+  width: 16rem;
+  height: 100vw;
+  position: fixed;
+  margin-right: 2rem;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: flex-start;
+  border-right-style: solid;
+  border-width: 2px;
+}
+
+.navbar-item{
+  width: 90%;
+  min-height: 130px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.main{
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  min-width: 400px;
+  width: 90%;
+  margin-left: 16rem;
 }
 
-.App-link {
-  color: #61dafb;
+.button{
+  width: 10rem;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.toggle{
+  display: flex;
+  flex-direction: column;
+
 }
+.toggle-header{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.toggle-footer{
+  display: flex;
+  justify-content: flex-end;
+}
+
+.input-form{
+  display: flex;
+  width: 100%;
+  min-width: 200px;
+  justify-content: space-between;
+  margin-bottom: 0.05rem;
+  margin-top: 0.05rem;
+}
+
+.Good{
+  border-style: double;
+  color: green;
+  background-color: greenyellow;
+  border-color: green;
+}
+
+.Bad{
+  border-style: double;
+  background-color: antiquewhite;
+  border-color: red;
+  color: red;
+}
+
+.alert{
+  position: fixed;
+  padding-right: 3rem;
+  padding-left: 3rem;
+}
+
+.Titulo{
+  text-decoration-line: underline;
+}
+
+.blog{
+  margin-top: 0.05rem;
+  margin-bottom: 0.05rem;
+  width: 90%;
+  text-align: center;
+  border-style: solid;
+  border-width: 2px;
+}
+
+table{
+  border-collapse:collapse;
+  width: 100%;
+}
+
+th,td{
+  margin: 0;
+  border-right-style: solid;
+  border-top-style: solid;
+  border-bottom-style: solid;
+  border-width: 1px;
+}
+
+.head{
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+
+main>div{
+  width: 80%;
+}
+.main>:nth-child(2){
+  background-color: gold;
+}
+
+.main>:nth-child(3){
+  background-color: grey;
+}
+
+.main>:nth-child(4){
+  background-color: rgb(204, 116, 34);
+}
+.head>div>button{
+  margin: 0.12rem;
+}
+
+.head>div>span{
+  margin: 0.12rem;
+}
+
+.Blog-row{
+  display: flex;
+  justify-content: flex-end;
+  padding:1px;
+}
+
+

@@ -3,90 +3,179 @@ import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from "./services/login"
 import signupService from "./services/signup"
-import Login from './components/login'
 import Alert from './components/alert'
+import "./App.css"
+
+import Navbar from './components/navbar'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [username, setUsername] = useState("")
-  const [password, setPassword] = useState("")
-  const [usernameSing, setUsernameSing] = useState("")
-  const [passwordSing, setPasswordSing] = useState("")
   const [user, setUser] = useState("")
   const [errorMessage, setErrorMessage] = useState(null)
-  const [goodMessage,setGoodMessage]=useState(null)
+  const [goodMessage, setGoodMessage] = useState(null)
+  const noteFormRef = React.createRef()
 
 
-  const handleLogin = async () =>  {
+  const handleLogin = async (credencials, setUsername, setPassword) => {
     try {
-      const autentication = await loginService.login({ username, password })
-      setUser(autentication)
+      const autentication = await loginService.login(credencials)
+      console.log(autentication)
       setUsername("")
       setPassword("")
-      setGoodMessage("Login success!")
-    } catch (error) {
-      setErrorMessage("wrong username or password")
+      setGoodMessage("Successful Login")
       setTimeout(() => {
-        setErrorMessage("")
+        setGoodMessage(null)
+      }, 5000)
+      setUser(autentication)
+      window.localStorage.setItem('credencials', JSON.stringify(autentication))
+    } catch (error) {
+      console.error(error.response.data.error)
+      setErrorMessage(error.response.data.error)
+      setTimeout(() => {
+        setErrorMessage(null)
       }, 5000)
 
     }
   }
 
-  const handleSignUp = async () => {
+  const handleSignUp = async (credencials, setUsername, setPassword) => {
     try {
-      const autentication = await signupService.signup({ usernameSing, passwordSing })
-      setUser(autentication)
-      setUsernameSing("")
-      setPasswordSing("")
+      const autentication = await signupService.signup(credencials)
+      console.log(autentication)
+      setUsername("")
+      setPassword("")
       setGoodMessage("Sign up success!")
+      setUser(autentication)
+      window.localStorage.setItem('credencials', JSON.stringify(autentication))
     } catch (error) {
-      console.dir(error)
-      setErrorMessage(error.errors)
+      console.log(error.response.data.error)
+      setErrorMessage(error.response.data.error)
       setTimeout(() => {
-        setErrorMessage("")
+        setErrorMessage(null)
       }, 5000)
+    }
+  }
 
+  const handleNewBlog = async (credencials, setUrl, setAuthor, setTitle) => {
+    try {
+      noteFormRef.current.setVisible(false)
+      const SavedBlog = await blogService.newBlog(credencials, user.token)
+      console.dir(SavedBlog)
+      setUrl("")
+      setAuthor("")
+      setTitle("")
+      setGoodMessage(`New Blog: ${SavedBlog.data.title} - ${SavedBlog.data.author}`)
+      setTimeout(() => {
+        setGoodMessage(null)
+      }, 5000)
+      const aux =await blogService.getAll() 
+      setBlogs(
+        aux.sort((blog1, blog2) => {
+          if (blog1.likes < blog2.likes) return 1
+          if (blog1.likes > blog2.likes) return -1
+          return 0
+        })
+      )
+    } catch (error) {
+      setErrorMessage(error.response.data.error)
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+    }
+
+  }
+
+  const handleEditBlog = async (blog) => {
+    try {
+      await blogService.editBlog(blog)
+      setGoodMessage(`Liked!`)
+      setTimeout(() => {
+        setGoodMessage(null)
+      }, 5000)
+      const aux =await blogService.getAll() 
+      setBlogs(
+        aux.sort((blog1, blog2) => {
+          if (blog1.likes < blog2.likes) return 1
+          if (blog1.likes > blog2.likes) return -1
+          return 0
+        })
+      )
+    }
+    catch (error) {
+      setErrorMessage(error.response.data.error)
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+    }
+  }
+
+  const handleDeleteBlog = async (blog) => {
+    try {
+      await blogService.deleteBlog(blog, user.token)
+      setErrorMessage(`Deleted!`)
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+      blogService.getAll().then(blogs =>
+        setBlogs(blogs)
+      )
+    }
+    catch (error) {
+      setErrorMessage(error.response.data.error)
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
     }
   }
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs(blogs)
-    )
+    blogService.getAll()
+      .then(blogs => setBlogs(
+        blogs.sort((blog1, blog2) => {
+          if (blog1.likes < blog2.likes) return 1
+          if (blog1.likes > blog2.likes) return -1
+          return 0
+        })
+      )
+      )
+    const JSONuser = window.localStorage.getItem('credencials')
+    if (JSONuser) setUser(JSON.parse(JSONuser))
+
   }, [])
 
+
   return (
-    <div>
-      <h2>blogs</h2>
-      {
-        user&&
-        `${user.username} logged in:`
-      }
-      <Alert text={errorMessage} classes="Bad" />
-      <Alert text={goodMessage} classes="Good" />
-
-
-      <Login
-        username={username}
-        setUsername={setUsername}
-        password={password}
-        setPassword={setPassword}
-        handleButton={handleLogin}
-        text="Login"
+    <div className="wrapper">
+      <Navbar
+        handleLogin={handleLogin}
+        handleNewBlog={handleNewBlog}
+        handleSignUp={handleSignUp}
+        setUser={setUser}
+        noteFormRef={noteFormRef}
+        user={user}
       />
-      <Login
-        username={usernameSing}
-        setUsername={setUsernameSing}
-        password={passwordSing}
-        setPassword={setPasswordSing}
-        handleButton={handleSignUp}
-        text="Sign Up"
-      />
+      <div className="main">
+        <h2 className="Titulo">Blogs</h2>
 
-      {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
-      )}
+        {blogs.map(blog =>
+          <Blog
+            key={blog.id}
+            blog={blog}
+            handleEditBlog={handleEditBlog}
+            handleDeleteBlog={handleDeleteBlog}
+            id={user.id} />
+        )}
+      </div>
+      <div className="alertspace">
+        {
+          user !==null?
+          <h3>  {user.username} </h3>
+          :
+          <span>log in to participate!</span>
+        }
+        <Alert text={errorMessage} classes="Bad" />
+        <Alert text={goodMessage} classes="Good" />
+      </div>
     </div>
   )
 }

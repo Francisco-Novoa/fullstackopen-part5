@@ -2,7 +2,7 @@ import React from "react"
 
 export default function ControledInput({ handleChange, value, label, name, placeholder, type }) {
     return (
-        <div>
+        <div className="input-form">
             <span>{label}</span>
             <input
                 name={name}

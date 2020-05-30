@@ -1,13 +1,21 @@
-import React from "react"
+import React, { useState } from "react"
 import ControledInput from "./ControledInput"
 
-export default function Login({ username, password, setPassword,setUsername, handleButton, text }) {
-
+export default function Login({ handleButton }) {
+    const [username, setUsername] = useState("")
+    const [password, setPassword] = useState("")
     return (
-        <form onSubmit={(e) => { e.preventDefault(); console.log("asdf"); handleButton() }}>
-            <div className="label">
-                <h3>{text}</h3>
-            </div>
+        <form onSubmit={(e) => {
+            e.preventDefault();
+            handleButton(
+                {
+                    username,
+                    password
+                },
+                setUsername,
+                setPassword
+            )
+        }}>
             <div>
                 <ControledInput
                     name="username"
@@ -26,7 +34,7 @@ export default function Login({ username, password, setPassword,setUsername, han
                     handleChange={setPassword}
                 />
             </div>
-            <div>
+            <div className="toggle-footer">
                 <button type="submit">
                     Submit
                 </button>
